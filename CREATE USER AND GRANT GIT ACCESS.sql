@@ -1,0 +1,27 @@
+-- Ensure you are using a role with user creation privileges
+USE ROLE USERADMIN;
+
+-- Create the user
+CREATE USER IF NOT EXISTS SJAIN2
+  PASSWORD = 'Password123'
+  LOGIN_NAME = 'SJAIN2'
+  DISPLAY_NAME = 'SJAIN2'
+  FIRST_NAME = 'S'
+  LAST_NAME = 'JAIN'
+  EMAIL = 'NOTIFY.SANKETJAIN@GAMIL.COM'
+  MUST_CHANGE_PASSWORD = FALSE
+  DEFAULT_WAREHOUSE = 'COMPUTE_WH'
+  DEFAULT_ROLE = 'SYSADMIN'
+  COMMENT = 'New analyst onboarding';
+
+-- Crucial Step: You must grant the role to the user so they can use it
+GRANT ROLE sysadmin TO USER SJAIN2;
+
+SHOW API INTEGRATIONS;
+-- Let your role use the API integration that connects Snowflake to the Git provider
+GRANT USAGE ON INTEGRATION GH_SJ_INTEGRATION TO ROLE SYSADMIN;
+
+-- Only if the repo uses a stored token (PAT) secret
+GRANT USAGE ON DATABASE GIT_INTEGRATION_DB TO ROLE SYSADMIN;
+GRANT USAGE ON SCHEMA GIT_INTEGRATION_DB.SECRETS TO ROLE SYSADMIN;
+GRANT READ ON SECRET GIT_INTEGRATION_DB.SECRETS.GITHUB_PAT TO ROLE SYSADMIN;
